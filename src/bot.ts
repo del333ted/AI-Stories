@@ -130,8 +130,8 @@ export function setupBot(bot: Telegraf<ContextMessageUpdate>) {
     ctx.replyWithHTML(
       `<b>Статистика:</b>\n\nПользователей: ${Users}\n${UsersChart}\n\nЧатов: ${Chats}\n${ChatsChart}\n\nЗапросов: ${Requests}\n${RequestsChart}
       
-<b>Пользователей с включенной рассылкой: </b>${await UserModel.find({
-        sendoutDisabled: false,
+<b>Пользователей с выключенной рассылкой: </b>${await UserModel.find({
+        sendoutDisabled: true,
       }).count()}`,
     )
   })
