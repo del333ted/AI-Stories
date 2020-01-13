@@ -5,7 +5,7 @@ import { DocumentType } from '@typegoose/typegoose'
 
 async function sendOut(text: string) {
   try {
-    const users = await UserModel.find({ sendoutDisabled: false })
+    const users = await UserModel.find()
 
     let n = 1
     let usersCount = 0
