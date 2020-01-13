@@ -10,6 +10,7 @@ import {
   fixAggregation,
   statisticChart,
 } from './helpers/statistic'
+import { unsubCommand, sendoutCommand } from './helpers/sendOut'
 
 const extend = got.extend({
   responseType: 'json',
@@ -100,6 +101,9 @@ export function setupBot(bot: Telegraf<ContextMessageUpdate>) {
       `Привет, ${ctx.from.first_name}, я дополню твою историю с помощью магии нейросетей. Нужно лишь написать её начало из нескольких предложений. Чем четче будет сформулировано начало, тем лучше будет результат.\n\n/story <i>текст (опционально)</i> — команда для использования бота в чате или в реплае на сообщение для продолжения истории.\n/stih <i>текст (опционально)</i> — команда для создания стихотворений.\n/stats — статистика.\n\n<b>GitHub бота:</b> github.com/del333ted/AI-Stories\n\nБот это лишь "обертка" для взаимодействия с API. Авторство принадлежит оригинальному автору проекта и все благодарности необходимо отправлять ему.\n\nGitHub проекта: github.com/mgrankin/ru_transformers\nВеб-версия проекта: text.skynet.center\n\n<b>Автор бота:</b> @del333ted`,
     )
   })
+
+  bot.command('unsub', unsubCommand)
+  bot.command('sendout', sendoutCommand)
 
   bot.command('stats', async ctx => {
     // Chats count

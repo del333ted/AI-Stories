@@ -4,6 +4,9 @@ import { prop, getModelForClass } from '@typegoose/typegoose'
 export class User {
   @prop({ required: true, index: true, unique: true })
   id: number
+
+  @prop({ default: false, required: true })
+  sendoutDisabled: boolean
 }
 
 // Get User model
