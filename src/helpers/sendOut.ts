@@ -36,7 +36,7 @@ function sleep(ms: number) {
 }
 
 export async function sendoutCommand(ctx: ContextMessageUpdate) {
-  if (ctx.message.from.id === Number(process.env.BOT_OWNER)) {
+  if (ctx.message.from.id === Number(process.env.OWNER_ID)) {
     const text = ctx.message.text.substr(9)
     const answ = await sendOut(text)
     await ctx.reply(`Sendout done.
