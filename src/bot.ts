@@ -79,6 +79,53 @@ async function requestAndAnswer(
 }
 
 export function setupBot(bot: Telegraf<ContextMessageUpdate>) {
+  bot.on(
+    'inline_query',
+    async ({ message, inlineQuery, answerInlineQuery }) => {
+      if (inlineQuery.query) {
+        const text = inlineQuery.query
+        const mediumResult = (await extend.post(
+          'https://models.dobro.ai/gpt2/medium/',
+          {
+            json: {
+              prompt: text,
+              length: 60,
+              num_samples: 1,
+            },
+          },
+        )) as any
+
+        if (
+          mediumResult.body &&
+          mediumResult.body.replies &&
+          mediumResult.body.replies.length > 0
+        ) {
+          const result = `<i>${text}</i>${mediumResult.body.replies[0]}`
+          await answerInlineQuery(
+            [
+              {
+                type: 'article',
+                id: new Date().getTime().toString(),
+                title: 'Story',
+                description: `${text}${mediumResult.body.replies[0]}`,
+                input_message_content: {
+                  message_text: result,
+                  parse_mode: 'HTML',
+                },
+              },
+            ],
+            { is_personal: true, cache_time: 0 },
+          )
+          return await findRequest(message.message_id)
+        }
+      }
+    },
+  )
+
+  bot.on('chosen_inline_result', ({ chosenInlineResult }) => {
+    console.log('chosen inline result', chosenInlineResult)
+  })
+
   bot.use(
     rateLimit({
       window: 8000,
@@ -137,49 +184,6 @@ export function setupBot(bot: Telegraf<ContextMessageUpdate>) {
     )
   })
 
-  bot.on(
-    'inline_query',
-    async ({ message, inlineQuery, answerInlineQuery }) => {
-      if (inlineQuery.query) {
-        const text = inlineQuery.query
-        const mediumResult = (await extend.post(
-          'https://models.dobro.ai/gpt2/medium/',
-          {
-            json: {
-              prompt: text,
-              length: 60,
-              num_samples: 1,
-            },
-          },
-        )) as any
-
-        if (
-          mediumResult.body &&
-          mediumResult.body.replies &&
-          mediumResult.body.replies.length > 0
-        ) {
-          const result = `<i>${text}</i>${mediumResult.body.replies[0]}`
-          await answerInlineQuery(
-            [
-              {
-                type: 'article',
-                id: new Date().getTime().toString(),
-                title: 'Story',
-                description: `${text}${mediumResult.body.replies[0]}`,
-                input_message_content: {
-                  message_text: result,
-                  parse_mode: 'HTML',
-                },
-              },
-            ],
-            { is_personal: true, cache_time: 0 },
-          )
-          return await findRequest(message.message_id)
-        }
-      }
-    },
-  )
-
   bot.command('story', async ctx => {
     let text = ctx.message.text.substr(7)
     if (ctx.message.reply_to_message && ctx.message.reply_to_message.text)
@@ -228,10 +232,6 @@ export function setupBot(bot: Telegraf<ContextMessageUpdate>) {
         requestAndAnswer(ctx, text, 'medium')
       }
     }
-  })
-
-  bot.on('chosen_inline_result', ({ chosenInlineResult }) => {
-    console.log('chosen inline result', chosenInlineResult)
   })
 
   bot.catch((err, ctx) => {
