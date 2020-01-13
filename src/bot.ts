@@ -10,7 +10,7 @@ import {
   fixAggregation,
   statisticChart,
 } from './helpers/statistic'
-import { unsubCommand, sendoutCommand } from './helpers/sendOut'
+import { unsubCommand, sendoutCommand, subCommand } from './helpers/sendOut'
 
 const extend = got.extend({
   responseType: 'json',
@@ -102,6 +102,7 @@ export function setupBot(bot: Telegraf<ContextMessageUpdate>) {
     )
   })
 
+  bot.command('sub', subCommand)
   bot.command('unsub', unsubCommand)
   bot.command('sendout', sendoutCommand)
 

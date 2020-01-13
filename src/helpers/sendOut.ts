@@ -50,5 +50,13 @@ export async function unsubCommand(ctx: ContextMessageUpdate) {
   User.sendoutDisabled = true
   await User.save()
 
-  await ctx.reply('Готово! Ты отписался от рассылки.')
+  await ctx.reply('Готово! Ты отписался от рассылки. Подписаться снова — /sub')
+}
+
+export async function subCommand(ctx: ContextMessageUpdate) {
+  const User = (await findUser(ctx.from.id)) as DocumentType<User>
+  User.sendoutDisabled = false
+  await User.save()
+
+  await ctx.reply('Готово! Ты подписался на рассылку.')
 }
