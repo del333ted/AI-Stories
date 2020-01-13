@@ -41,7 +41,7 @@ export async function sendoutCommand(ctx: ContextMessageUpdate) {
     const answ = await sendOut(text)
     await ctx.reply(`Sendout done.
       
-      Users: ${answ}`)
+Users: ${answ}`)
   }
 }
 
