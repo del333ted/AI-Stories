@@ -75,6 +75,8 @@ async function requestAndAnswer(
       reply_to_message_id: ctx.message.message_id,
     })
     return await findRequest(ctx.message.message_id)
+  } else {
+    ctx.reply(`Error ${result}`)
   }
 }
 
